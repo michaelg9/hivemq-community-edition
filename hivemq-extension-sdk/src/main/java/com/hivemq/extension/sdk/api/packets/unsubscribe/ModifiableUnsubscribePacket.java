@@ -59,7 +59,7 @@ public interface ModifiableUnsubscribePacket extends UnsubscribePacket {
     /**
      * Used to check if an UNSUBSCRIBE package has been modified.
      *
-     * @return true if the UNSUBSCRIBE package has been modified, false if it has not.
+     * @return the modifiable user properties.
      */
     boolean isModified();
 }
