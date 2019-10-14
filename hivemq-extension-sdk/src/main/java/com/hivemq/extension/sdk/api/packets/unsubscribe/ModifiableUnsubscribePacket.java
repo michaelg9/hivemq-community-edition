@@ -20,6 +20,7 @@ public interface ModifiableUnsubscribePacket extends UnsubscribePacket {
      */
     void setTopics(@NotNull List<String> topics);
 
+
     /**
      * Adds one or more topics to the UNSUBSCRIBE packet.
      *
@@ -37,43 +38,9 @@ public interface ModifiableUnsubscribePacket extends UnsubscribePacket {
     void removeTopics(@NotNull String... topics);
 
     /**
-     * Adds one or more topics to the UNSUBSCRIBE packet.
-     *
-     * @param topics one or more topics to be added.
-     */
-    void addTopics(String... topics);
-
-    /**
-     * Removes one or more topics from the UNSUBSCRIBE packet.
-     *
-     * @param topics one or more topics to be removed.
-     */
-    void removeTopics(String... topics);
-
-    /**
-     * Adds one or more topics to the UNSUBSCRIBE packet.
-     *
-     * @param topics one or more topics to be added.
-     */
-    void addTopics(String... topics);
-
-    /**
-     * Removes one or more topics from the UNSUBSCRIBE packet.
-     *
-     * @param topics one or more topics to be removed.
-     */
-    void removeTopics(String... topics);
-
-    /**
      * Gets the modifiable {@link ModifiableUserProperties} of the UNSUBSCRIBE packet.
      */
     @Override
     @NotNull ModifiableUserProperties getUserProperties();
 
-    /**
-     * Used to check if an UNSUBSCRIBE package has been modified.
-     *
-     * @return the modifiable user properties.
-     */
-    boolean isModified();
 }
