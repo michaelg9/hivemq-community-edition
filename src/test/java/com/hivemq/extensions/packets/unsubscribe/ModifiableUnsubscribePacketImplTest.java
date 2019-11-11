@@ -72,6 +72,7 @@ public class ModifiableUnsubscribePacketImplTest {
         modifiableUnsubscribePacket.setTopics(topics);
         assertEquals("Test3", topics.get(2));
     }
+
     private ModifiableUnsubscribePacketImpl testUnsubscribePacket() {
         final ImmutableList<String> topics = ImmutableList.of("Test", "Test/Topic");
         final @NotNull Mqtt5UserProperties props =
