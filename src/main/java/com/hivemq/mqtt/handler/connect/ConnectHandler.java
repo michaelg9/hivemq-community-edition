@@ -637,7 +637,8 @@ public class ConnectHandler extends SimpleChannelInboundHandler<CONNECT> impleme
                 .withWildcardSubscriptionAvailable(configurationService.mqttConfiguration().wildcardSubscriptionsEnabled())
                 .withSharedSubscriptionAvailable(configurationService.mqttConfiguration().sharedSubscriptionsEnabled())
                 .withMaximumQoS(configurationService.mqttConfiguration().maximumQos())
-                .withRetainAvailable(configurationService.mqttConfiguration().retainedMessagesEnabled());
+                .withRetainAvailable(configurationService.mqttConfiguration().retainedMessagesEnabled())
+                .withAuthMethod(msg.getAuthMethod());
 
         final boolean overridden = msg.getSessionExpiryInterval() > configuredSessionExpiryInterval;
         final long sessionExpiryInterval = overridden ? configuredSessionExpiryInterval : msg.getSessionExpiryInterval();
