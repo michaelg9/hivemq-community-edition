@@ -116,6 +116,12 @@ public interface SimpleAuthOutput extends AsyncOutput<SimpleAuthOutput> {
                                            @NotNull String reasonString);
 
     /**
+     *
+     * @param authenticationData to be included in the AUTH packet payload
+     */
+    void continueToAuth(@NotNull byte[] authenticationData);
+
+    /**
      * Fails the authentication for the client.
      * <p>
      * For an MQTT 3 client a CONNACK with connect return code <b>'Connection Refused, not authorized'</b> is sent.

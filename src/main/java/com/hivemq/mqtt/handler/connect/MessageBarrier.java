@@ -21,6 +21,7 @@ import com.google.inject.Inject;
 import com.hivemq.annotations.NotNull;
 import com.hivemq.logging.EventLog;
 import com.hivemq.mqtt.message.Message;
+import com.hivemq.mqtt.message.auth.AUTH;
 import com.hivemq.mqtt.message.connack.CONNACK;
 import com.hivemq.mqtt.message.connect.CONNECT;
 import com.hivemq.mqtt.message.reason.Mqtt5ConnAckReasonCode;
@@ -74,7 +75,7 @@ public class MessageBarrier extends ChannelDuplexHandler {
                 }
                 return;
 
-            } else if (connectAlreadySent.get() && !connackAlreadySent.get()) {
+            } else if (connectAlreadySent.get() && !connackAlreadySent.get() && !(msg instanceof AUTH)) {
                 messageQueue.add((Message) msg);
                 return;
             }

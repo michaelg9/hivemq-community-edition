@@ -26,6 +26,7 @@ import com.hivemq.extensions.client.ClientAuthorizers;
 import com.hivemq.extensions.client.ClientContextImpl;
 import com.hivemq.extensions.client.parameter.ConnectionAttributes;
 import com.hivemq.extensions.events.client.parameters.ClientEventListeners;
+import com.hivemq.extensions.services.auth.ConnectAuthTaskContext;
 import com.hivemq.mqtt.message.ProtocolVersion;
 import com.hivemq.mqtt.message.connect.CONNECT;
 import com.hivemq.mqtt.message.mqtt5.Mqtt5UserProperties;
@@ -134,6 +135,7 @@ public class ChannelAttributes {
     public static final AttributeKey<ModifiableDefaultPermissions> AUTH_PERMISSIONS = AttributeKey.valueOf("Auth.User.Permissions");
 
     public static final AttributeKey<CONNECT> CONNECT_MESSAGE = AttributeKey.valueOf("Connect.Message");
+    public static final AttributeKey<ConnectAuthTaskContext> AUTH_TASK_CONTEXT = AttributeKey.valueOf("Connect.Context");
 
     /**
      * True if this client is not allowed to publish any more messages, if <null> he is allowed to do so.
