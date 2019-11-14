@@ -16,6 +16,8 @@
 
 package com.hivemq.extension.sdk.api.auth.parameter;
 
+import com.hivemq.extension.sdk.api.annotations.Nullable;
+import com.hivemq.extension.sdk.api.packets.auth.AUTHPacket;
 import com.hivemq.extension.sdk.api.packets.connect.ConnectPacket;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
@@ -41,4 +43,7 @@ public interface SimpleAuthInput extends ClientBasedInput {
      */
     @Immutable
     @NotNull ConnectPacket getConnectPacket();
+
+    @Immutable
+    @Nullable AUTHPacket getAuthPacket();
 }
