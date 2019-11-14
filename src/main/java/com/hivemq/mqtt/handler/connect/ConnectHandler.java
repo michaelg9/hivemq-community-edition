@@ -257,7 +257,7 @@ public class ConnectHandler extends SimpleChannelInboundHandler<CONNECT> impleme
         final ConnectAuthTaskContext context =
                 new ConnectAuthTaskContext(connect.getClientIdentifier(), this, mqttConnacker, ctx, connect, asyncer,
                         authenticatorProviderMap.size(), configurationService.securityConfiguration().validateUTF8(), createClientSettings(connect));
-
+        ctx.channel().attr(ChannelAttributes.AUTH_TASK_CONTEXT).set(context);
         final AuthenticatorProviderInput authenticatorProviderInput = authenticatorProviderInputFactory.createInput(ctx, connect.getClientIdentifier());
 
         for (final WrappedAuthenticatorProvider wrapped : authenticatorProviderMap.values()) {

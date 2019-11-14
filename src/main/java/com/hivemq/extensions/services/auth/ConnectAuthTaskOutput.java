@@ -58,6 +58,7 @@ public class ConnectAuthTaskOutput extends AbstractAsyncOutput<SimpleAuthOutput>
     private @Nullable ConnackReasonCode connackReasonCode;
     private @Nullable String reasonString;
     private @NotNull ModifiableDefaultPermissions defaultPermissions;
+    private @NotNull byte[] authenticationData;
     private @NotNull
     final ModifiableClientSettingsImpl clientSettings;
 
@@ -164,6 +165,12 @@ public class ConnectAuthTaskOutput extends AbstractAsyncOutput<SimpleAuthOutput>
         authenticationState = AuthenticationState.CONTINUE;
     }
 
+    @Override
+    public void continueToAuth(final byte[] authenticationData) {
+        authenticationState = AuthenticationState.AUTH;
+        this.authenticationData = authenticationData;
+    }
+
     private void checkDecided(final @NotNull String method) {
         if (!decided.compareAndSet(false, true)) {
             throw new UnsupportedOperationException(method + " must not be called if authenticateSuccessfully, " +
@@ -227,7 +234,11 @@ public class ConnectAuthTaskOutput extends AbstractAsyncOutput<SimpleAuthOutput>
         return authenticatorPresent.get();
     }
 
+    public byte[] getAuthenticationData() {
+        return authenticationData;
+    }
+
     enum AuthenticationState {
-        SUCCESS, FAILED, CONTINUE, UNDECIDED
+        SUCCESS, FAILED, CONTINUE, UNDECIDED, AUTH
     }
 }

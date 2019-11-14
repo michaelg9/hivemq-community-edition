@@ -18,9 +18,11 @@ package com.hivemq.extensions.services.auth;
 
 import com.hivemq.annotations.NotNull;
 import com.hivemq.extension.sdk.api.auth.Authenticator;
+import com.hivemq.extension.sdk.api.auth.ExtendedAuthenticator;
 import com.hivemq.extension.sdk.api.auth.SimpleAuthenticator;
 import com.hivemq.extension.sdk.api.auth.parameter.AuthenticatorProviderInput;
 import com.hivemq.extensions.executor.task.PluginInOutTask;
+import com.hivemq.mqtt.message.auth.AUTH;
 import com.hivemq.util.Exceptions;
 
 /**
@@ -45,14 +47,20 @@ public class SimpleAuthTask implements PluginInOutTask<ConnectAuthTaskInput, Con
             final @NotNull ConnectAuthTaskOutput connectAuthTaskOutput) {
 
         if (connectAuthTaskOutput.getAuthenticationState() != ConnectAuthTaskOutput.AuthenticationState.UNDECIDED &&
-                connectAuthTaskOutput.getAuthenticationState() != ConnectAuthTaskOutput.AuthenticationState.CONTINUE) {
+                connectAuthTaskOutput.getAuthenticationState() != ConnectAuthTaskOutput.AuthenticationState.CONTINUE &&
+                connectAuthTaskOutput.getAuthenticationState() != ConnectAuthTaskOutput.AuthenticationState.AUTH) {
             return connectAuthTaskOutput;
         }
         try {
             final Authenticator authenticator = wrappedAuthenticatorProvider.getAuthenticator(authenticatorProviderInput);
             if (authenticator instanceof SimpleAuthenticator) {
-                ((SimpleAuthenticator) authenticator).onConnect(connectAuthTaskInput, connectAuthTaskOutput);
-                connectAuthTaskOutput.authenticatorPresent();
+                if (connectAuthTaskOutput.getAuthenticationState() == ConnectAuthTaskOutput.AuthenticationState.AUTH &&
+                        authenticator instanceof ExtendedAuthenticator) {
+                    ((ExtendedAuthenticator) authenticator).onAUTH(connectAuthTaskInput, connectAuthTaskOutput);
+                } else {
+                    ((SimpleAuthenticator) authenticator).onConnect(connectAuthTaskInput, connectAuthTaskOutput);
+                    connectAuthTaskOutput.authenticatorPresent();
+                }
             }
         } catch (final Throwable throwable) {
             Exceptions.rethrowError(LOG_STATEMENT, throwable);

@@ -26,15 +26,20 @@ import com.hivemq.extensions.packets.general.InternalUserProperties;
 import com.hivemq.extensions.packets.general.ReasonCodeUtil;
 import com.hivemq.mqtt.handler.connack.MqttConnacker;
 import com.hivemq.mqtt.handler.connect.ConnectHandler;
+import com.hivemq.mqtt.message.auth.AUTH;
 import com.hivemq.mqtt.message.connack.Mqtt3ConnAckReturnCode;
 import com.hivemq.mqtt.message.connect.CONNECT;
+import com.hivemq.mqtt.message.mqtt5.Mqtt5UserProperties;
+import com.hivemq.mqtt.message.reason.Mqtt5AuthReasonCode;
 import com.hivemq.mqtt.message.reason.Mqtt5ConnAckReasonCode;
 import com.hivemq.util.ChannelAttributes;
 import com.hivemq.util.ChannelUtils;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -128,6 +133,11 @@ public class ConnectAuthTaskContext extends PluginInOutTaskContext<ConnectAuthTa
             case CONTINUE:
                 continuing(pluginOutput);
                 break;
+
+            case AUTH:
+                continueAuthentication(pluginOutput);
+                break;
+
             case UNDECIDED:
                 if (!connectAuthTaskOutput.isAuthenticatorPresent()) {
                     ctx.executor().execute(() -> connectHandler.connectSuccessfulUnauthenticated(ctx, connect, pluginOutput.getClientSettings()));
@@ -178,6 +188,39 @@ public class ConnectAuthTaskContext extends PluginInOutTaskContext<ConnectAuthTa
         }
     }
 
+    private void continueAuthentication(@NotNull final ConnectAuthTaskOutput pluginOutput) {
+        this.position.decrementAndGet();
+        if (ctx.channel().hasAttr(ChannelAttributes.AUTH_METHOD)) {
+            // on to enhanced auth
+            try {
+                ctx.channel().attr(ChannelAttributes.AUTH_PERMISSIONS).set(connectAuthTaskOutput.getDefaultPermissions());
+                ctx.executor().execute(() -> this.continueToAUTH(ctx, pluginOutput.getAuthenticationData()));
+            } catch (final RejectedExecutionException ex) {
+                if (!ctx.executor().isShutdown()) {
+                    log.error("Execution of successful unauthenticated connect was rejected for client with IP {}.",
+                            ChannelUtils.getChannelIP(ctx.channel()).or("UNKNOWN"), ex);
+                }
+            }
+        } else {
+            final OnAuthFailedEvent event = new OnAuthFailedEvent(DisconnectedReasonCode.NOT_AUTHORIZED, pluginOutput.getReasonString(), pluginOutput.getChangedUserProperties());
+            mqttConnacker.connackError(ctx.channel(), "Client with ip {} could not be authenticated",
+                    "Failed Authentication", Mqtt5ConnAckReasonCode.NOT_AUTHORIZED,
+                    Mqtt3ConnAckReturnCode.REFUSED_NOT_AUTHORIZED, pluginOutput.getReasonString(), event);
+        }
+
+    }
+
+    private void continueToAUTH(final @NotNull ChannelHandlerContext ctx, final @NotNull byte[] data) {
+        final ByteBuffer buffer = ByteBuffer.allocate(data.length + 2);
+        buffer.putShort((short) data.length);
+        buffer.put(data);
+        buffer.rewind();
+        final ChannelFuture authSent;
+        final AUTH auth = new AUTH(connect.getAuthMethod(), buffer.array(), Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION,
+                Mqtt5UserProperties.NO_USER_PROPERTIES, "just because");
+        authSent = ctx.writeAndFlush(auth);
+    }
+
     public void increment() {
         position.incrementAndGet();
     }
@@ -186,5 +229,9 @@ public class ConnectAuthTaskContext extends PluginInOutTaskContext<ConnectAuthTa
     @Override
     public ConnectAuthTaskOutput get() {
         return this.connectAuthTaskOutput;
+    }
+
+    public CONNECT getConnect() {
+        return connect;
     }
 }

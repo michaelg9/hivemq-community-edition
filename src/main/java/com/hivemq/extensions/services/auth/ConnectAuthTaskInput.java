@@ -21,10 +21,13 @@ import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.auth.parameter.SimpleAuthInput;
 import com.hivemq.extension.sdk.api.client.parameter.ClientInformation;
 import com.hivemq.extension.sdk.api.client.parameter.ConnectionInformation;
+import com.hivemq.extension.sdk.api.packets.auth.AUTHPacket;
 import com.hivemq.extension.sdk.api.packets.connect.ConnectPacket;
 import com.hivemq.extensions.PluginInformationUtil;
 import com.hivemq.extensions.executor.task.PluginTaskInput;
+import com.hivemq.extensions.packets.auth.AuthPacketImpl;
 import com.hivemq.extensions.packets.connect.ConnectPacketImpl;
+import com.hivemq.mqtt.message.auth.AUTH;
 import com.hivemq.mqtt.message.connect.CONNECT;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -40,6 +43,8 @@ public class ConnectAuthTaskInput implements Supplier<ConnectAuthTaskInput>, Plu
     private @Nullable ConnectPacket connectPacket;
     private final @NotNull ConnectionInformation connectionInformation;
     private final @NotNull ClientInformation clientInformation;
+    private @Nullable AUTHPacket auth;
+
 
     public ConnectAuthTaskInput(@NotNull final CONNECT connect,
                                 @NotNull final ChannelHandlerContext ctx) {
@@ -62,6 +67,15 @@ public class ConnectAuthTaskInput implements Supplier<ConnectAuthTaskInput>, Plu
             connectPacket = new ConnectPacketImpl(connect);
         }
         return connectPacket;
+    }
+
+    @Override
+    public @Nullable AUTHPacket getAuthPacket() {
+        return auth;
+    }
+
+    public void setAuth(final AUTH auth) {
+        this.auth = new AuthPacketImpl(auth);
     }
 
     @NotNull
