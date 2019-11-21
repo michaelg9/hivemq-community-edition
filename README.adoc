@@ -1,8 +1,6 @@
-= HiveMQ Community Edition
+= HiveMQ Community Edition with Extended Authentication SDK Support
 
 image:https://www.hivemq.com/img/svg/hivemq-ce.svg[HiveMQ Community ,500, align="left"]
-
-image:https://travis-ci.com/hivemq/hivemq-community-edition.svg?token=2JEoSXzFpviQH47MBPSm&branch=master["Build Status", link="https://travis-ci.com/hivemq/hivemq-community-edition"]
 
 HiveMQ CE is a Java-based open source MQTT broker that fully supports MQTT 3.x and MQTT 5. 
 
@@ -14,56 +12,14 @@ It is the foundation of the HiveMQ Enterprise Connectivity and Messaging Platfor
 * Contribution Guidelines: link:CONTRIBUTING.adoc[Contributing.adoc]
 * License: The source files in this repository are made available under the link:LICENSE[Apache License Version 2.0].
 
+= This fork
 
-= Features
-
-* All MQTT 3.1, 3.1.1 and MQTT 5.0 features
- * MQTT over TCP, TLS, WebSocket and Secure WebSocket transport
- * Java Extension SDK for:
- ** Authentication
- ** Authorization
- ** Client Initializers
- ** MQTT Packet Interceptors
- ** Interacting with Publishes, Retained Messages, Clients and Subscriptions
- * Running on Windows, Linux and MacOS (Linux is recommended)
-
-HiveMQ CE is compatible with all MQTT 3 and MQTT 5 clients, including Eclipse Paho and https://github.com/hivemq/hivemq-mqtt-client[HiveMQ MQTT Client].
-
-= Documentation
-
-The documentation for the HiveMQ CE can be found https://github.com/hivemq/hivemq-community-edition/wiki[here].
-
-* MQTT Resources
-** https://www.hivemq.com/mqtt-essentials/[MQTT Essentials]
-** https://www.hivemq.com/mqtt-5/[MQTT 5 Essentials]
-
-= HiveMQ Community Forum
-
-The ideal place for questions or discussions about the HiveMQ Community Edition is our brand new https://community.hivemq.com/[HiveMQ Community Forum].
+This fork just extends the HiveMQ broker to expose the MQTTv5 extended authentication support features to the extension SDK.
+The features are already built into the broker but there is no support for them into the SDK.
+Currently the SDK only supports the simple authentication method for both MQTTv3 and MQTTv5 but AUTH packets can't be used yet.
+This fork allows an authenticator to extend from ExtendedAuthenticator that can request further information from the client by sending an AUTH packet and finally make the decision after the response AUTH is received.
 
 = How to use
-
-== Quick start
-
-* Download the latest https://github.com/hivemq/hivemq-community-edition/releases/download/2019.1/hivemq-ce-2019.1.zip[HiveMQ CE binary package].
-
-* Unzip the package
-* Run the run.sh (Linux/OSX) or run.bat (Windows) in the bin folder of the package.
-
-[source,bash]
-----
-cd hivemq-ce-<version>
-./bin/run.sh
-----
-
-You can now connect MQTT clients to `<ip address>:1883`.
-
-[CAUTION]
-If you want to connect devices on external networks to HiveMQ CE, please make sure your server is reachable from those networks and the required ports (default: 1883) are accessible through your firewall.
-
-== Nightly Builds
-
-Just in time builds for current branches on this repository and for specific commits are available https://hivemq.github.io/nightly-builds/[here].
 
 == Building from source
 
@@ -77,7 +33,7 @@ If you are in doubt, you can check the installed Java version by entering `java 
 Check out the git repository and build the binary package.
 [source,bash]
 ----
-git clone https://github.com/hivemq/hivemq-community-edition.git
+git clone https://github.com/michaelg9/hivemq-community-edition.git
 
 cd hivemq-community-edition
 
@@ -96,12 +52,6 @@ cd hivemq-ce-<version>
 
 ./bin/run.sh
 ----
-
-For further development instructions see the link:CONTRIBUTING.adoc[contribution guidelines].
-
-= Contributing
-
-If you want to contribute to HiveMQ CE, see the link:CONTRIBUTING.adoc[contribution guidelines].
 
 = License
 
