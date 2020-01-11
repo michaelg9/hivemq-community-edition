@@ -16,8 +16,10 @@
 
 package com.hivemq.mqtt.handler.connect;
 
+import com.hivemq.mqtt.message.auth.AUTH;
 import com.hivemq.mqtt.message.connack.CONNACK;
 import com.hivemq.mqtt.message.connect.CONNECT;
+import com.hivemq.mqtt.message.reason.Mqtt5AuthReasonCode;
 import com.hivemq.mqtt.message.reason.Mqtt5ConnAckReasonCode;
 import com.hivemq.util.ChannelUtils;
 import io.netty.channel.*;
@@ -47,7 +49,7 @@ public class StopReadingAfterConnectHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        if (msg instanceof CONNECT) {
+        if (msg instanceof CONNECT || msg instanceof AUTH) {
             if (log.isTraceEnabled()) {
                 log.trace("Suspending read operations for MQTT client with clientId {} and IP {}", ((CONNECT) msg).getClientIdentifier(), ChannelUtils.getChannelIP(ctx.channel()).or("UNKNOWN"));
             }
@@ -64,6 +66,8 @@ public class StopReadingAfterConnectHandler extends ChannelDuplexHandler {
 
                 promise.addListener(REENABLE_AUTO_READ_LISTENER);
             }
+        } else if (msg instanceof AUTH && ((AUTH) msg).getReasonCode().equals(Mqtt5AuthReasonCode.CONTINUE_AUTHENTICATION)) {
+            promise.addListener(REENABLE_AUTO_READ_LISTENER);
         }
         super.write(ctx, msg, promise);
     }
