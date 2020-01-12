@@ -12,23 +12,23 @@ It is the foundation of the HiveMQ Enterprise Connectivity and Messaging Platfor
 * Contribution Guidelines: link:CONTRIBUTING.adoc[Contributing.adoc]
 * License: The source files in this repository are made available under the link:LICENSE[Apache License Version 2.0].
 
-= This fork
+== This fork
 
 This fork just extends the HiveMQ broker to expose the MQTTv5 extended authentication support features to the extension SDK.
 The features are already built into the broker but there is no support for them into the SDK.
 Currently the SDK only supports the simple authentication method for both MQTTv3 and MQTTv5 but AUTH packets can't be used yet.
 This fork allows an authenticator to extend from ExtendedAuthenticator that can request further information from the client by sending an AUTH packet and finally make the decision after the response AUTH is received.
 
-= How to use
+== How to use
 
-== Building from source
+=== Building from source
 
-=== Prerequisites
+==== Prerequisites
 At least Java version 11 is required to build and run HiveMQ CE.
 
 If you are in doubt, you can check the installed Java version by entering `java -version` on your command line.
 
-=== Building the binary package
+==== Building the binary package
 
 Check out the git repository and build the binary package.
 [source,bash]
@@ -43,7 +43,7 @@ cd hivemq-community-edition
 The package `hivemq-ce-<version>.zip` is created in the sub-folder `build/zip/`.
 
 
-== Start
+=== Start
 Unzip the created binary package 
 
 [source,bash]
@@ -53,7 +53,7 @@ cd hivemq-ce-<version>
 ./bin/run.sh
 ----
 
-= License
+== License
 
 HiveMQ Community Edition is licensed under the `APACHE LICENSE, VERSION 2.0`. A copy of the license can be found link:LICENSE[here].
 

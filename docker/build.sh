@@ -15,8 +15,20 @@ echo "Building Docker image for HiveMQ ${HIVEMQ_VERSION}"
 ./gradlew packaging
 cd docker
 cp ../build/zip/hivemq-ce-${HIVEMQ_VERSION}.zip .
+# bring the ace extension
+git clone https://github.com/michaelg9/HiveMQACEextension.git
+cd HiveMQACEextension
+mvn clean package
+cp target/oauth-hivemq-*.zip ../
+cd ../
+rm -rf HiveMQACEextension/
+cp -R ../TLS ./TLS
+####
+
 docker build --build-arg HIVEMQ_VERSION=${HIVEMQ_VERSION} -f Dockerfile -t ${IMAGE} .
 rm -f hivemq-ce-${HIVEMQ_VERSION}.zip
+rm -rf oauth-hivemq-*.zip
+rm -rf TLS
 
 if [[ ! -z ${TRAVIS_TAG} ]]; then
     echo "Tagging image as ${TRAVIS_TAG}"

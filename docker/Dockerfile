@@ -4,6 +4,7 @@ FROM busybox AS unzip
 ARG HIVEMQ_VERSION=2019.1
 
 COPY hivemq-ce-${HIVEMQ_VERSION}.zip /
+COPY oauth-hivemq-0.0.1-distribution.zip /
 
 RUN unzip /hivemq-ce-${HIVEMQ_VERSION}.zip
 
@@ -42,6 +43,9 @@ COPY docker-entrypoint.sh /opt/docker-entrypoint.sh
 
 # HiveMQ setup
 COPY --from=unzip /hivemq-ce-${HIVEMQ_VERSION} /opt/hivemq-ce-${HIVEMQ_VERSION}
+COPY --from=unzip /oauth-hivemq-0.0.1-distribution.zip /opt/hivemq-ce-${HIVEMQ_VERSION}/extensions
+COPY ./TLS /TLS
+
 RUN ln -s /opt/hivemq-ce-${HIVEMQ_VERSION} /opt/hivemq \
     && mv /opt/config.xml /opt/hivemq/conf/config.xml \
     && groupadd --gid ${HIVEMQ_GID} hivemq \
@@ -55,11 +59,8 @@ VOLUME /opt/hivemq/data
 # Persist log data
 VOLUME /opt/hivemq/log
 
-#mqtt-clients
-EXPOSE 1883
-
-#websockets
-EXPOSE 8000
+#tls mqtt
+EXPOSE 8883
 
 WORKDIR /opt/hivemq
 
