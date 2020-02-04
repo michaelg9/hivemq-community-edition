@@ -3,7 +3,7 @@ plugins {
     id 'com.github.hierynomus.license' version '0.15.0' apply false
     id 'com.jfrog.bintray' version '1.8.4' apply false
     id 'org.owasp.dependencycheck' version '5.2.0' apply false
-    id 'com.github.spotbugs' version '1.6.9' apply false
+//    id 'com.github.spotbugs' version '1.6.9' apply false
     id 'de.thetaphi.forbiddenapis' version '2.6' apply false
 }
 
@@ -32,7 +32,7 @@ apply plugin: 'org.owasp.dependencycheck'
  ***********************/
 apply plugin: 'jacoco'
 apply plugin: 'pmd'
-apply plugin: 'com.github.spotbugs'
+//apply plugin: 'com.github.spotbugs'
 apply plugin: 'de.thetaphi.forbiddenapis'
 
 allprojects {
@@ -245,7 +245,7 @@ dependencies {
     )
 
     //plugins for spotbugs
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.8.0'
+//    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.8.0'
 }
 
 /******************************
@@ -313,13 +313,13 @@ jacoco {
     toolVersion = jacocoVersion
 }
 
-spotbugs {
-    toolVersion = spotbugsVersion
-    sourceSets = [sourceSets.main]
-    ignoreFailures = true
-    reportsDir = file("${buildDir}/reports/findbugs")
-    reportLevel = 'medium'
-}
+//spotbugs {
+//    toolVersion = spotbugsVersion
+//    sourceSets = [sourceSets.main]
+//    ignoreFailures = true
+//    reportsDir = file("${buildDir}/reports/findbugs")
+//    reportLevel = 'medium'
+//}
 
 /****************************
  * Build Preconditions *

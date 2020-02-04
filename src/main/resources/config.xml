@@ -25,6 +25,10 @@
             <name>my-secure-tcp-listener</name>
             <tls>
                 <client-authentication-mode>REQUIRED</client-authentication-mode>
+                <protocols>
+                    <protocol>TLSv1.3</protocol>
+                    <protocol>TLSv1.2</protocol>
+                </protocols>
                 <keystore>
                     <!-- Configuring the path to the key store -->
                     <path>/Users/mimicha2/mqtt/hivemq-community-edition/TLS/hivemq.jks</path>

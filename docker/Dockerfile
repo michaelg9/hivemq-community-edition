@@ -7,6 +7,7 @@ COPY hivemq-ce-${HIVEMQ_VERSION}.zip /
 COPY oauth-hivemq-0.0.1-distribution.zip /
 
 RUN unzip /hivemq-ce-${HIVEMQ_VERSION}.zip
+RUN unzip /oauth-hivemq-0.0.1-distribution.zip
 
 FROM openjdk:11-jre-slim
 
@@ -43,8 +44,8 @@ COPY docker-entrypoint.sh /opt/docker-entrypoint.sh
 
 # HiveMQ setup
 COPY --from=unzip /hivemq-ce-${HIVEMQ_VERSION} /opt/hivemq-ce-${HIVEMQ_VERSION}
-COPY --from=unzip /oauth-hivemq-0.0.1-distribution.zip /opt/hivemq-ce-${HIVEMQ_VERSION}/extensions
-COPY ./TLS /TLS
+COPY --from=unzip /oauth-hivemq /opt/hivemq-ce-${HIVEMQ_VERSION}/extensions/oauth-hivemq
+COPY ./TLS /opt/TLS
 
 RUN ln -s /opt/hivemq-ce-${HIVEMQ_VERSION} /opt/hivemq \
     && mv /opt/config.xml /opt/hivemq/conf/config.xml \

@@ -19,6 +19,11 @@
 <hivemq>
 
     <listeners>
+        <tcp-listener>
+            <port>1883</port>
+            <bind-address>0.0.0.0</bind-address>
+            <name>unsecured-listener</name>
+        </tcp-listener>
         <tls-tcp-listener>
             <port>8883</port>
             <bind-address>0.0.0.0</bind-address>
@@ -27,14 +32,14 @@
                 <client-authentication-mode>REQUIRED</client-authentication-mode>
                 <keystore>
                     <!-- Configuring the path to the key store -->
-                    <path>/TLS/hivemq.jks</path>
+                    <path>/opt/TLS/hivemq.jks</path>
                     <!-- The password of the key store -->
                     <password>michaelg9</password>
                     <!-- The password of the private key -->
                     <private-key-password>michaelg9</private-key-password>
                 </keystore>
                 <truststore>
-                    <path>/TLS/hivemq-trust-store.jks</path>
+                    <path>/opt/TLS/hivemq-trust-store.jks</path>
                     <password>michaelg9</password>
                 </truststore>
             </tls>
